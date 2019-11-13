@@ -1,0 +1,9 @@
+*.pickle
+*.npy
+/.vscode
+*.dat
+README_data.md
+*.pdf
+*.zip
+*.docx
+*.txt
