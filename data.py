@@ -13,19 +13,19 @@ def init_matrix():
         ratingsMatrix: zero initialized matrix of required shape
     '''
 
-    movieSet = set()
-    userSet = set()
+    movieSet = {}
+    userSet = {}
 
     with open('ratings.csv') as file:
         reader = csv.reader(file)
         for row in reader:
-            cnt += 1
-            userSet.add(int(row[0]))
-            movieSet.add(int(row[1]))
+            user = int(row[0])
+            movie = int(row[1])
+            userSet[user] = 1
+            movieSet[movie] = 1
 
     # print(min(movieSet), max(movieSet))
     # print(min(userSet), max(userSet))
-
     userCount = max(userSet)
     movieCount = max(movieSet)
 
@@ -66,10 +66,23 @@ def store_matrix(ratingsMatrix):
         ratingsMatrix: the ratings matrix to be stored.
     '''
 
-    with open('ratingsMatrix.pickle', 'wb') as file:
+    with open('ratingsMatrix_noZeros.pickle', 'wb') as file:
         pickle.dump(ratingsMatrix, file)
         file.close()
     # np.save('ratingsMatrix.npy', ratingsMatrix)
+
+#%%
+def remove_zeros(ratingsMatrix):
+
+    toBeDeleted = []
+    for i in range(ratingsMatrix.shape[1]):
+        # print(np.max(ratingsMatrix[:][i]))
+        if np.max(ratingsMatrix[:,i]) == 0:
+            toBeDeleted.append(i)
+
+    ratingsMatrix = np.delete(ratingsMatrix, toBeDeleted, 1)
+
+    return ratingsMatrix
 
 # %%
 # UserIDs   : 1 - 6040
@@ -84,6 +97,7 @@ ratingsMatrix = init_matrix()
 (userCount, movieCount) = ratingsMatrix.shape
 print(userCount, movieCount)
 ratingsMatrix = populate_matrix(ratingsMatrix)
+ratingsMatrix = remove_zeros(ratingsMatrix)
 store_matrix(ratingsMatrix)
 
 # %%
